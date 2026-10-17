@@ -1,0 +1,42 @@
+/*
+Power BI DAX measures
+Import data/ecommerce_orders.csv and name the table Orders.
+Create a Date table (Modeling > New table) with:
+DateTable = CALENDAR(MIN(Orders[OrderDate]), MAX(Orders[OrderDate]))
+Then mark DateTable as the date table and relate DateTable[Date] to Orders[OrderDate].
+*/
+Delivered Orders =
+CALCULATE(DISTINCTCOUNT(Orders[OrderID]), Orders[OrderStatus] = "Delivered")
+
+Unique Customers =
+CALCULATE(DISTINCTCOUNT(Orders[CustomerID]), Orders[OrderStatus] = "Delivered")
+
+Units Sold =
+CALCULATE(SUM(Orders[Quantity]), Orders[OrderStatus] = "Delivered")
+
+Net Sales (INR) =
+CALCULATE(SUM(Orders[NetSales_INR]), Orders[OrderStatus] = "Delivered")
+
+Estimated Profit (INR) =
+CALCULATE(SUM(Orders[EstimatedProfit_INR]), Orders[OrderStatus] = "Delivered")
+
+Average Order Value (INR) =
+DIVIDE([Net Sales (INR)], [Delivered Orders], 0)
+
+Profit Margin % =
+DIVIDE([Estimated Profit (INR)], [Net Sales (INR)], 0)
+
+Discount Amount (INR) =
+SUM(Orders[Discount_INR])
+
+Returned Orders =
+CALCULATE(DISTINCTCOUNT(Orders[OrderID]), Orders[OrderStatus] = "Returned")
+
+Cancelled Orders =
+CALCULATE(DISTINCTCOUNT(Orders[OrderID]), Orders[OrderStatus] = "Cancelled")
+
+Return Rate % =
+DIVIDE([Returned Orders], DISTINCTCOUNT(Orders[OrderID]), 0)
+
+Monthly Sales =
+[Net Sales (INR)]
